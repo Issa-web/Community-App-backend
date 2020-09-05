@@ -1,5 +1,5 @@
 class Api::V1::PostsController < ApplicationController
-    skip_before_action :logged_in?, only: [:create, :index, :show, :destroy]
+    skip_before_action :logged_in?, only: [:create, :index, :show, :update, :destroy]
     def index 
         @posts = Post.all 
 
@@ -18,12 +18,15 @@ class Api::V1::PostsController < ApplicationController
         render json: @post.to_json(:methods => [:comments])
     end
 
-    def edit
-        @post = Post.find(params[:id])
-    end
+    # def edit
+    #     @post = Post.find(params[:id])
+    # end
 
     def update
-        @post.update(taco_params)
+       
+        @post = Post.find_by(id: params[:id])
+        #  byebug
+        @post.update(update_params)
         render json: @post.to_json
     end
 
@@ -43,5 +46,9 @@ class Api::V1::PostsController < ApplicationController
     def post_params 
         params.require(:post).permit(:user_id, :description)
     end 
+
+    def update_params
+        params.require(:post).permit(:description)
+    end
 end
 
